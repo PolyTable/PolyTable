@@ -54,17 +54,6 @@ public class Member {
     }
 
 
-    public static Member createAdminAccount(String loginId, String pwd, String name) {
-        Member admin = new Member();
-        admin.loginId = loginId;
-        admin.pwd = pwd;
-        admin.name = name;
-        admin.level = Level.ADMIN;
-        admin.auth = Auth.Y;
-
-        return admin;
-    }
-
     /**
      * 비즈니스 로직
      */

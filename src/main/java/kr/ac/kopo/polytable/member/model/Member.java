@@ -20,8 +20,12 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(unique = true, nullable = false)
     private String loginId;
+    @Column(nullable = false)
     private String pwd;
     private LocalDateTime lastModifiedPwdDate;
 
@@ -33,6 +37,8 @@ public class Member {
 
     private String name;
     private LocalDateTime birthDate;
+
+    @Column(unique = true, nullable = false)
     private String telNo;
 
     @Builder

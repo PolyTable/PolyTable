@@ -22,7 +22,7 @@ public class Store {
     @Column(nullable = false)
     private String storeName;
 
-    @Column(nullable = false)
+    @Column(unique = true ,nullable = false)
     private String CRN;
 
     @Embedded

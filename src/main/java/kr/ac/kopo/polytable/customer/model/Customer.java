@@ -19,6 +19,8 @@ public class Customer {
     @Column(unique = true, nullable = false)
     private String phone;
 
+    private String customerName;
+
     private Integer numberOfVisits;
     private Integer numberOfCancel;
     private Integer numberOfNoShow;

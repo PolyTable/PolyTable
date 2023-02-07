@@ -17,16 +17,19 @@ public class ReservationTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalTime regTime;
+    @Column(nullable = false)
+    private LocalTime startTime;
+    @Column(nullable = false)
+    private LocalTime endTime;
+
 
     @Column(nullable = false)
     private Integer maximumHeads;
 
     @Builder
-    public ReservationTime(LocalTime regTime, Integer maximumHeads) {
-        this.regTime = regTime;
+    public ReservationTime(LocalTime startTime, LocalTime endTime, Integer maximumHeads) {
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.maximumHeads = maximumHeads;
     }
-
-
 }

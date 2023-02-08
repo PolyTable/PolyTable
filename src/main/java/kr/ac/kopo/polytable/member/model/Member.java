@@ -2,6 +2,7 @@ package kr.ac.kopo.polytable.member.model;
 
 import kr.ac.kopo.polytable.member.enums.Auth;
 import kr.ac.kopo.polytable.member.enums.Level;
+import kr.ac.kopo.polytable.store.model.Store;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +29,10 @@ public class Member {
     @Column(nullable = false)
     private String pwd;
     private LocalDateTime lastModifiedPwdDate;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     @Enumerated(EnumType.STRING)
     private Level level;
@@ -57,6 +62,14 @@ public class Member {
     /**
      * 비즈니스 로직
      */
+
+    public void addNewStore(Store store) {
+        this.store = store;
+    }
+
+    public void removeStoreFromOwner() {
+        this.store = null;
+    }
 
     public void modifiedEmail(String email) {
         this.email = email;

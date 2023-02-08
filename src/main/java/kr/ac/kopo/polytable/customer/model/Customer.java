@@ -1,5 +1,6 @@
 package kr.ac.kopo.polytable.customer.model;
 
+import kr.ac.kopo.polytable.reservation.model.Reservation;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,9 @@ public class Customer {
     private String phone;
 
     private String customerName;
+
+    @OneToOne(mappedBy = "customer")
+    private Reservation reservation;
 
     private Integer numberOfVisits;
     private Integer numberOfCancel;
@@ -50,4 +54,7 @@ public class Customer {
         this.numberOfCancel += 1;
     }
 
+    public void addNewReserve(Reservation reservation) {
+        this.reservation = reservation;
+    }
 }

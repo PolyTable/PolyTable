@@ -1,5 +1,6 @@
 package kr.ac.kopo.polytable.reservationtime.model;
 
+import kr.ac.kopo.polytable.store.model.Store;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,15 +8,22 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReservationTime {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reservation_time_id")
     private Long id;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     @Column(nullable = false)
     private LocalTime startTime;
@@ -31,5 +39,13 @@ public class ReservationTime {
         this.startTime = startTime;
         this.endTime = endTime;
         this.maximumHeads = maximumHeads;
+    }
+
+    /**
+     * core
+     */
+
+    public void addNewStore(Store store) {
+        this.store = store;
     }
 }

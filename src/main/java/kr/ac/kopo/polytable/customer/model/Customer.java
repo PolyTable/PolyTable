@@ -22,8 +22,7 @@ public class Customer {
 
     private String customerName;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id")
+    @OneToOne(mappedBy = "customer")
     private Reservation reservation;
 
     private Integer numberOfVisits;

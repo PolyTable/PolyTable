@@ -11,6 +11,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,9 +32,8 @@ public class Store {
     @OneToOne(mappedBy = "store")
     private Member owner;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_time_id")
-    private ReservationTime reserveTime;
+    @OneToMany(mappedBy = "store")
+    private List<ReservationTime> reserveTime = new ArrayList<>();
 
     @Embedded
     @Column(nullable = false)
@@ -60,14 +61,9 @@ public class Store {
      * 비즈니스 로직
      */
 
-    public void addNewReserveTime(ReservationTime reserveTime){
-        this.reserveTime = reserveTime;
+    public void bindingReserveTimeWithStore(ReservationTime reserveTime){
+        this.reserveTime.add(reserveTime);
         reserveTime.addNewStore(this);
-    }
-
-    public void modifiedReserveTime(ReservationTime newReserveTime) {
-        this.reserveTime = newReserveTime;
-        newReserveTime.addNewStore(this);
     }
 
     public void bindingWithOwner(Member owner) {

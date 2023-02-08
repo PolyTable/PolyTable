@@ -21,8 +21,9 @@ public class ReservationTime {
     private Long id;
 
 
-    @OneToMany(mappedBy = "store_id")
-    private List<Store> stores = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     @Column(nullable = false)
     private LocalTime startTime;
@@ -45,6 +46,6 @@ public class ReservationTime {
      */
 
     public void addNewStore(Store store) {
-        this.stores.add(store);
+        this.store = store;
     }
 }

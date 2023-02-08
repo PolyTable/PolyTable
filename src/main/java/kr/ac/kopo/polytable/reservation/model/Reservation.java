@@ -20,8 +20,8 @@ public class Reservation {
     @Column(nullable = false)
     private Integer heads;
 
-    @OneToOne(mappedBy = "reservation")
-    @Column(nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @Builder
@@ -38,9 +38,5 @@ public class Reservation {
     public void bindingWithCus(Customer customer) {
         this.customer = customer;
         customer.addNewReserve(this);
-    }
-
-    public void modifiedCustomer(Customer customer) {
-        this.customer = customer;
     }
 }

@@ -32,13 +32,20 @@ public class Customer {
     private LocalDateTime recentlyVisitDate;
 
     @Builder
-    public Customer(String phone, Integer numberOfVisits, Integer numberOfCancel, Integer numberOfNoShow, LocalDateTime recentlyVisitDate) {
+    public Customer(String phone, String customerName, Reservation reservation, Integer numberOfVisits,
+                    Integer numberOfCancel, Integer numberOfNoShow, LocalDateTime recentlyVisitDate) {
         this.phone = phone;
+        this.customerName = customerName;
+        this.reservation = reservation;
         this.numberOfVisits = numberOfVisits;
         this.numberOfCancel = numberOfCancel;
         this.numberOfNoShow = numberOfNoShow;
         this.recentlyVisitDate = recentlyVisitDate;
     }
+
+
+
+
 
     // 비즈니스 로직
     public void increaseVisitCount () {

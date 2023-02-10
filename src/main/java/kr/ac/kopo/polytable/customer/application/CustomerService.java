@@ -1,11 +1,14 @@
 package kr.ac.kopo.polytable.customer.application;
 
+import kr.ac.kopo.polytable.customer.dto.CustomerResponseDto;
 import kr.ac.kopo.polytable.customer.dto.CustomerSaveRequestDto;
 import kr.ac.kopo.polytable.customer.error.CustomerNotFoundException;
 import kr.ac.kopo.polytable.customer.error.DuplicatePhoneNumberException;
 import kr.ac.kopo.polytable.customer.model.Customer;
 import kr.ac.kopo.polytable.customer.model.CustomerRepository;
+import kr.ac.kopo.polytable.modelmapper.CustomModelMapper;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CustomModelMapper customModelMapper;
 
     @Transactional
-    public void createCustomer(CustomerSaveRequestDto request) {
+    public CustomerResponseDto createCustomer(CustomerSaveRequestDto request) {
         Customer findCustomer = customerRepository.findByPhone(request.getPhone());
 
         if (findCustomer != null) {
@@ -29,6 +33,9 @@ public class CustomerService {
                 .build();
 
         customerRepository.save(newCustomer);
+
+        ModelMapper mapper = customModelMapper.standardMapper();
+        return mapper.map(newCustomer, CustomerResponseDto.class);
     }
 
     @Transactional
@@ -76,14 +83,15 @@ public class CustomerService {
     }
 
     @Transactional(readOnly = true)
-    public Customer getCustomerByPhoneNumber(String phone) {
+    public CustomerResponseDto getCustomerByPhoneNumber(String phone) {
         Customer findCustomer = customerRepository.findByPhone(phone);
 
         if (findCustomer == null) {
             throw new CustomerNotFoundException();
         }
 
-        return findCustomer;
+        ModelMapper mapper = customModelMapper.standardMapper();
+        return mapper.map(findCustomer, CustomerResponseDto.class);
     }
 
 

@@ -1,4 +1,4 @@
-package kr.ac.kopo.polytable.member.auth.api;
+package kr.ac.kopo.polytable.member.auth.presentation;
 
 import kr.ac.kopo.polytable.global.jwt.dto.TokenDTO;
 import kr.ac.kopo.polytable.global.jwt.vo.RefreshToken;
@@ -18,12 +18,13 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 @Slf4j
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/api/login")
+    @PostMapping("/login")
     public ResponseEntity<SimpleAuthResponse> login(@Valid @RequestBody LoginRequest request) {
         TokenDTO token = authService.login(request.getUsername(), request.getPassword());
         RefreshToken refreshToken = token.getRefreshToken();
@@ -31,13 +32,13 @@ public class AuthController {
                 .body(SimpleAuthResponse.from(token.getAccessToken(), true));
     }
 
-    @PostMapping("/api/reissue")
+    @PostMapping("/auth/reissue")
     public ResponseEntity<SimpleAuthResponse> reissue(@CookieValue(name = "refreshToken") String refreshToken) {
         log.info("token : {}", refreshToken);
         return ResponseEntity.ok(SimpleAuthResponse.from(authService.reissue(refreshToken), true));
     }
 
-    @DeleteMapping("/api/logout")
+    @DeleteMapping("/auth/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         Cookie myCookie = new Cookie("refreshToken", null);
         myCookie.setMaxAge(0);

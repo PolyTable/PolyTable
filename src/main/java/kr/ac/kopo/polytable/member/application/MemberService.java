@@ -1,14 +1,17 @@
 package kr.ac.kopo.polytable.member.application;
 
 
-import kr.ac.kopo.polytable.global.error.exception.ErrorCode;
+import kr.ac.kopo.polytable.customer.error.DuplicatePhoneNumberException;
 import kr.ac.kopo.polytable.global.security.principal.CustomUserDetails;
 import kr.ac.kopo.polytable.member.dto.MemberResponse;
 import kr.ac.kopo.polytable.member.dto.ModifiedRequest;
 import kr.ac.kopo.polytable.member.dto.SimpleMemberResponse;
+import kr.ac.kopo.polytable.member.error.DuplicateEmailException;
+import kr.ac.kopo.polytable.member.error.DuplicateTelNoException;
+import kr.ac.kopo.polytable.member.error.DuplicateUsernameException;
 import kr.ac.kopo.polytable.member.error.MemberNotFoundException;
 import kr.ac.kopo.polytable.member.model.Member;
-import kr.ac.kopo.polytable.member.model.MemberRepository;
+import kr.ac.kopo.polytable.member.model.repository.MemberRepository;
 import kr.ac.kopo.polytable.modelmapper.CustomModelMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,18 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     public SimpleMemberResponse create(final Member member) {
+        if (memberRepository.findByUsername(member.getUsername()).isPresent()) {
+            throw new DuplicateUsernameException("이미 가입된 아이디입니다.");
+        }
+
+        if (memberRepository.findByEmail(member.getEmail()).isPresent()) {
+            throw new DuplicateEmailException("이미 가입된 이메일입니다.");
+        }
+
+        if (memberRepository.findByTelNo(member.getTelNo()).isPresent()) {
+            throw new DuplicateTelNoException("이미 가입된 전화번호입니다.");
+        }
+
         member.setPassword(passwordEncoder.encode(member.getPassword()));
         member.activatedAccount();
 
@@ -41,7 +56,7 @@ public class MemberService {
     }
 
     public MemberResponse modified(final CustomUserDetails userDetails, final ModifiedRequest request) {
-        Member member = memberRepository.findById(userDetails.getId()).orElseThrow(() -> new MemberNotFoundException(ErrorCode.USER_NOT_FOUND));
+        Member member = memberRepository.findById(userDetails.getId()).orElseThrow(MemberNotFoundException::new);
 
         if (request.getEmail() != null) {
             member.modifiedEmail(request.getEmail());
@@ -68,11 +83,11 @@ public class MemberService {
 
         return memberRepository.findById(userDetails.getId())
                 .map(MemberResponse::of)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     public void turnOffAccount(CustomUserDetails userDetails) {
-        Member findMember = memberRepository.findById(userDetails.getId()).orElseThrow(() -> new MemberNotFoundException(ErrorCode.USER_NOT_FOUND));
+        Member findMember = memberRepository.findById(userDetails.getId()).orElseThrow(MemberNotFoundException::new);
         findMember.turnOffAccount();
     }
 
@@ -81,8 +96,6 @@ public class MemberService {
 
         return memberRepository.findById(userDetails.getId())
                 .map(MemberResponse::of)
-                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(MemberNotFoundException::new);
     }
-
-
 }

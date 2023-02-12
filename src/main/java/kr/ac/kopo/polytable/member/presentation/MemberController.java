@@ -1,4 +1,4 @@
-package kr.ac.kopo.polytable.member.api;
+package kr.ac.kopo.polytable.member.presentation;
 
 import kr.ac.kopo.polytable.global.security.principal.CustomUserDetails;
 import kr.ac.kopo.polytable.member.application.MemberService;
@@ -18,28 +18,29 @@ import java.net.URISyntaxException;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/members")
 @Slf4j
 public class MemberController {
 
     private final MemberService memberService;
 
 
-    @PostMapping("/api/members")
+    @PostMapping
     public ResponseEntity<SimpleMemberResponse> create(@Valid @RequestBody CreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.create(request.toEntity()));
     }
 
-    @GetMapping("/api/members")
+    @GetMapping
     public ResponseEntity<MemberResponse> getDetailById() {
         return ResponseEntity.ok().body(memberService.getDetailBy(this.getPrincipal()));
     }
 
-    @PutMapping("/api/members")
+    @PutMapping
     public ResponseEntity<MemberResponse> modifiedMemberInfo(@Valid @RequestBody ModifiedRequest request) throws URISyntaxException {
         return ResponseEntity.ok().body(memberService.modified(this.getPrincipal(), request));
     }
 
-    @DeleteMapping("/api/members")
+    @DeleteMapping
     public ResponseEntity<Void> turnOffAccount() {
         memberService.turnOffAccount(this.getPrincipal());
         return ResponseEntity.noContent().build();

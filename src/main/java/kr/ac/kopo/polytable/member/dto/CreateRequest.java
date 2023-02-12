@@ -1,7 +1,7 @@
 package kr.ac.kopo.polytable.member.dto;
 
 import kr.ac.kopo.polytable.member.model.Member;
-import kr.ac.kopo.polytable.member.vo.RoleType;
+import kr.ac.kopo.polytable.member.model.vo.RoleType;
 import lombok.*;
 
 import java.time.LocalDate;

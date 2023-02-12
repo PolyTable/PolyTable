@@ -1,8 +1,7 @@
 package kr.ac.kopo.polytable.global.security.principal;
 
-import kr.ac.kopo.polytable.global.error.exception.ErrorCode;
 import kr.ac.kopo.polytable.member.error.MemberNotFoundException;
-import kr.ac.kopo.polytable.member.model.MemberRepository;
+import kr.ac.kopo.polytable.member.model.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
     public static final MemberNotFoundException NOT_FOUND_EXCEPTION =
-            new MemberNotFoundException(ErrorCode.USER_NOT_FOUND);
+            new MemberNotFoundException();
     private final MemberRepository memberRepository;
 
     @Override

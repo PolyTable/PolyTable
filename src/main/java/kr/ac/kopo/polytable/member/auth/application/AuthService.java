@@ -1,6 +1,5 @@
 package kr.ac.kopo.polytable.member.auth.application;
 
-import kr.ac.kopo.polytable.global.error.exception.ErrorCode;
 import kr.ac.kopo.polytable.global.jwt.TokenProvider;
 import kr.ac.kopo.polytable.global.jwt.dto.TokenDTO;
 import kr.ac.kopo.polytable.global.jwt.error.TokenNotFoundException;
@@ -9,7 +8,7 @@ import kr.ac.kopo.polytable.global.security.principal.CustomUserDetails;
 import kr.ac.kopo.polytable.member.auth.error.MemberInfoMismatchException;
 import kr.ac.kopo.polytable.member.error.MemberNotFoundException;
 import kr.ac.kopo.polytable.member.model.Member;
-import kr.ac.kopo.polytable.member.model.MemberRepository;
+import kr.ac.kopo.polytable.member.model.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,16 +29,17 @@ public class AuthService {
     private final AuthenticationManagerBuilder managerBuilder;
     private final TokenProvider tokenProvider;
 
+    private static final String ERROR_NO_MEMBER = "해당 회원이 존재하지 않습니다.";
     private final PasswordEncoder passwordEncoder;
 
     public TokenDTO login(final String username, final String password) {
-        Member member = memberRepository.findByUsername(username).orElseThrow(() -> new MemberNotFoundException(ErrorCode.USER_NOT_FOUND));
+        Member member = memberRepository.findByUsername(username).orElseThrow(() -> new MemberNotFoundException());
 
         String encodePassword = passwordEncoder.encode(password);
 
         if (passwordEncoder.matches(password, member.getPassword())){
             CustomUserDetails userDetails = memberRepository.findUserDetailsByUsername(username)
-                    .orElseThrow(() -> new MemberNotFoundException(ErrorCode.USER_NOT_FOUND));
+                    .orElseThrow(() -> new MemberNotFoundException());
 
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, encodePassword);
 
@@ -47,12 +47,12 @@ public class AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             return tokenProvider.createToken(userDetails.getId(), authentication);
-        } else throw new MemberInfoMismatchException(ErrorCode.PASSWORD_MISS_MATCH);
+        } else throw new MemberInfoMismatchException(ERROR_NO_MEMBER);
     }
 
     public AccessToken reissue(final String refreshToken) {
         if (!tokenProvider.validateToken(refreshToken)) {
-            throw new TokenNotFoundException(ErrorCode.TOKEN_NOT_FOUND);
+            throw new TokenNotFoundException();
         }
 
         Authentication authentication = tokenProvider.getAuthentication(refreshToken);

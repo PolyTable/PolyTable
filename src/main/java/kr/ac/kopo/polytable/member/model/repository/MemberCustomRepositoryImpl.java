@@ -1,4 +1,4 @@
-package kr.ac.kopo.polytable.member.model;
+package kr.ac.kopo.polytable.member.model.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

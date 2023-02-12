@@ -1,4 +1,4 @@
-package kr.ac.kopo.polytable.security.jwt;
+package kr.ac.kopo.polytable.global.jwt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,38 +14,36 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-
 @Slf4j
+@RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private final TokenProvider tokenProvider;
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    public JwtFilter(TokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
+    private final TokenProvider tokenProvider;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String jwt = resloveToken(httpServletRequest);
-        String requestURI = httpServletRequest.getRequestURI();
+        HttpServletRequest servletRequest = (HttpServletRequest) request;
+
+        String jwt = resolveToken(servletRequest);
+        String requestURI = servletRequest.getRequestURI();
 
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
-        } else {
-            log.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+        }
+        else {
+            log.debug("유효한 JWT 토큰이 없습니다. uri: {}", requestURI);
         }
 
-        chain.doFilter(request,response);
+        chain.doFilter(request, response);
     }
 
-    private String resloveToken(HttpServletRequest request) {
+    private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
 
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
 

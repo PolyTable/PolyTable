@@ -1,4 +1,4 @@
-package kr.ac.kopo.polytable.member.auth.error;
+package kr.ac.kopo.polytable.auth.error;
 
 
 public class MemberInfoMismatchException extends RuntimeException {

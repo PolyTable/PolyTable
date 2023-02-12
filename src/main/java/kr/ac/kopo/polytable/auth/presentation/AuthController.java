@@ -1,10 +1,10 @@
-package kr.ac.kopo.polytable.member.auth.presentation;
+package kr.ac.kopo.polytable.auth.presentation;
 
+import kr.ac.kopo.polytable.auth.application.AuthService;
+import kr.ac.kopo.polytable.auth.dto.LoginRequest;
+import kr.ac.kopo.polytable.auth.dto.SimpleAuthResponse;
 import kr.ac.kopo.polytable.global.jwt.dto.TokenDTO;
 import kr.ac.kopo.polytable.global.jwt.vo.RefreshToken;
-import kr.ac.kopo.polytable.member.auth.application.AuthService;
-import kr.ac.kopo.polytable.member.auth.dto.LoginRequest;
-import kr.ac.kopo.polytable.member.auth.dto.SimpleAuthResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

@@ -1,7 +1,6 @@
 package kr.ac.kopo.polytable.member.dto;
 
 import kr.ac.kopo.polytable.member.model.Member;
-import kr.ac.kopo.polytable.member.model.vo.RoleType;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,7 +18,6 @@ public class CreateRequest {
     private LocalDate birthDate;
     private String name;
     private String telNo;
-
 
     public Member toEntity() {
         return Member.builder()

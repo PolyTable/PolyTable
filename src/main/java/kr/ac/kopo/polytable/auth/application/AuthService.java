@@ -1,11 +1,11 @@
-package kr.ac.kopo.polytable.member.auth.application;
+package kr.ac.kopo.polytable.auth.application;
 
 import kr.ac.kopo.polytable.global.jwt.TokenProvider;
 import kr.ac.kopo.polytable.global.jwt.dto.TokenDTO;
 import kr.ac.kopo.polytable.global.jwt.error.TokenNotFoundException;
 import kr.ac.kopo.polytable.global.jwt.vo.AccessToken;
 import kr.ac.kopo.polytable.global.security.principal.CustomUserDetails;
-import kr.ac.kopo.polytable.member.auth.error.MemberInfoMismatchException;
+import kr.ac.kopo.polytable.auth.error.MemberInfoMismatchException;
 import kr.ac.kopo.polytable.member.error.MemberNotFoundException;
 import kr.ac.kopo.polytable.member.model.Member;
 import kr.ac.kopo.polytable.member.model.repository.MemberRepository;

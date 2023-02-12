@@ -1,7 +1,7 @@
 package kr.ac.kopo.polytable.global.security.principal;
 
+import kr.ac.kopo.polytable.member.dto.RoleType;
 import kr.ac.kopo.polytable.member.model.Member;
-import kr.ac.kopo.polytable.member.model.vo.RoleType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

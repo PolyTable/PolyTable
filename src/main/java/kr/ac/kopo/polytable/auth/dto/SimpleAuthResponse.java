@@ -1,4 +1,4 @@
-package kr.ac.kopo.polytable.member.auth.dto;
+package kr.ac.kopo.polytable.auth.dto;
 
 import kr.ac.kopo.polytable.global.jwt.vo.AccessToken;
 import lombok.AccessLevel;

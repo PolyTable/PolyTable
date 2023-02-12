@@ -1,4 +1,4 @@
-package kr.ac.kopo.polytable.member.auth.dto;
+package kr.ac.kopo.polytable.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;

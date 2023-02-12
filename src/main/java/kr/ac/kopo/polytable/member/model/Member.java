@@ -1,7 +1,6 @@
 package kr.ac.kopo.polytable.member.model;
 
-import kr.ac.kopo.polytable.member.enums.Auth;
-import kr.ac.kopo.polytable.member.enums.Level;
+import kr.ac.kopo.polytable.member.dto.RoleType;
 import kr.ac.kopo.polytable.store.model.Store;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -25,38 +25,42 @@ public class Member {
     private String email;
 
     @Column(unique = true, nullable = false)
-    private String loginId;
+    private String username;
     @Column(nullable = false)
-    private String pwd;
+    private String password;
     private LocalDateTime lastModifiedPwdDate;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @Enumerated(EnumType.STRING)
-    private Level level;
 
     @Enumerated(EnumType.STRING)
-    private Auth auth;
+    @Column(nullable = false)
+    private RoleType roleType;
+
+    @Column(name = "activated")
+    private boolean activated;
 
     private String name;
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
 
     @Column(unique = true, nullable = false)
     private String telNo;
 
     @Builder
-    public Member(String email, String loginId, String pwd, Level level, Auth auth, String name, LocalDateTime birthDate, String telNo) {
+    public Member(String email, String username, String password, RoleType roleType , String name, LocalDate birthDate, String telNo) {
         this.email = email;
-        this.loginId = loginId;
-        this.pwd = pwd;
-        this.level = level;
-        this.auth = auth;
+        this.username = username;
+        this.password = password;
+        this.roleType = roleType;
+        this.activated = true;
         this.name = name;
-        this.birthDate = LocalDateTime.parse(birthDate.format(DateTimeFormatter.BASIC_ISO_DATE));
+        this.birthDate = birthDate;
         this.telNo = telNo;
     }
+
+
 
 
     /**
@@ -75,8 +79,8 @@ public class Member {
         this.email = email;
     }
 
-    public void modifiedPwd(String pwd) {
-        this.pwd = pwd;
+    public void modifiedPwd(String password) {
+        this.password = password;
 
         LocalDateTime date = LocalDateTime.now();
         date.format(DateTimeFormatter.BASIC_ISO_DATE);
@@ -87,11 +91,22 @@ public class Member {
         this.name = name;
     }
 
-    public void modifiedBirthDate(LocalDateTime birthDate) {
-        this.birthDate = LocalDateTime.parse(birthDate.format(DateTimeFormatter.BASIC_ISO_DATE));
+    public void modifiedBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 
     public void modifiedTelNo(String telNo) {
         this.telNo = telNo;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public void activatedAccount() {
+        this.activated = true;
+    }
+
+    public void turnOffAccount() {
+        this.activated = false;
     }
 }

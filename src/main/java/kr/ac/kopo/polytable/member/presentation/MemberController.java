@@ -18,29 +18,29 @@ import java.net.URISyntaxException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/members")
+@RequestMapping("/api")
 @Slf4j
 public class MemberController {
 
     private final MemberService memberService;
 
 
-    @PostMapping
+    @PostMapping("/public/members")
     public ResponseEntity<SimpleMemberResponse> create(@Valid @RequestBody CreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.create(request.toEntity()));
     }
 
-    @GetMapping
+    @GetMapping("/members")
     public ResponseEntity<MemberResponse> getDetailById() {
         return ResponseEntity.ok().body(memberService.getDetailBy(this.getPrincipal()));
     }
 
-    @PutMapping
+    @PutMapping("/members")
     public ResponseEntity<MemberResponse> modifiedMemberInfo(@Valid @RequestBody ModifiedRequest request) throws URISyntaxException {
         return ResponseEntity.ok().body(memberService.modified(this.getPrincipal(), request));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/members")
     public ResponseEntity<Void> turnOffAccount() {
         memberService.turnOffAccount(this.getPrincipal());
         return ResponseEntity.noContent().build();

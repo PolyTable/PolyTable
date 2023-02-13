@@ -6,9 +6,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -27,7 +30,7 @@ public class Store {
     private String storeName;
 
     @Column(unique = true ,nullable = false)
-    private String CRN;
+    private String crn;
 
     @OneToOne(mappedBy = "store")
     private Member owner;
@@ -39,29 +42,35 @@ public class Store {
     @Column(nullable = false)
     private Address address;
 
+    @Column(nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate foundedDate;
+
     @Column(unique = true, nullable = false)
     private String storeTelNo;
 
-    private LocalDateTime openTime;
-    private LocalDateTime closeTime;
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime openTime;
+    @DateTimeFormat(pattern = "HH:mm")
+    private LocalTime closeTime;
 
 
     @Builder
-    public Store(String storeName, String CRN, Address address, String storeTelNo, Member owner,LocalDateTime openTime, LocalDateTime closeTime) {
+    public Store(String storeName, String crn, Address address, String storeTelNo, LocalDate foundedDate, LocalTime openTime, LocalTime closeTime) {
         this.storeName = storeName;
-        this.CRN = CRN;
+        this.crn = crn;
         this.address = address;
         this.storeTelNo = storeTelNo;
-        this.bindingWithOwner(owner);
-        this.openTime = LocalDateTime.parse(openTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
-        this.closeTime = LocalDateTime.parse(closeTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+        this.foundedDate = foundedDate;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
     }
 
     /**
      * 비즈니스 로직
      */
 
-    public void bindingReserveTimeWithStore(ReservationTime reserveTime){
+    public void bindingReserveTimeWithStore(ReservationTime reserveTime) {
         this.reserveTime.add(reserveTime);
         reserveTime.addNewStore(this);
     }
@@ -78,12 +87,16 @@ public class Store {
         newOwner.addNewStore(this);
     }
 
+    public void removeOwner() {
+        this.owner = null;
+    }
+
     public void modifiedStoreName(String storeName) {
         this.storeName = storeName;
     }
 
-    public void modifiedCRN(String CRN) {
-        this.CRN = CRN;
+    public void modifiedCrn(String crn) {
+        this.crn = crn;
     }
 
     public void modifiedAddress(Address address) {
@@ -94,11 +107,15 @@ public class Store {
         this.storeTelNo = storeTelNo;
     }
 
-    public void modifiedOpenTime(LocalDateTime openTime) {
-        this.openTime = LocalDateTime.parse(openTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+    public void modifiedOpenTime(LocalTime openTime) {
+        this.openTime = openTime;
     }
 
-    public void modifiedCloseTime(LocalDateTime closeTime) {
-        this.closeTime = LocalDateTime.parse(closeTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+    public void modifiedCloseTime(LocalTime closeTime) {
+        this.closeTime = closeTime;
+    }
+
+    public void modifiedFoundedDate(LocalDate foundedDate) {
+        this.foundedDate = foundedDate;
     }
 }

@@ -89,6 +89,7 @@ public class MemberService {
     public void turnOffAccount(CustomUserDetails userDetails) {
         Member findMember = memberRepository.findById(userDetails.getId()).orElseThrow(MemberNotFoundException::new);
         findMember.turnOffAccount();
+        memberRepository.save(findMember);
     }
 
     @Transactional(readOnly = true)

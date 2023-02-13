@@ -24,7 +24,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/login")
+    @PostMapping("/public/login")
     public ResponseEntity<SimpleAuthResponse> login(@Valid @RequestBody LoginRequest request) {
         TokenDTO token = authService.login(request.getUsername(), request.getPassword());
         RefreshToken refreshToken = token.getRefreshToken();

@@ -6,7 +6,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,7 +14,7 @@ import java.util.List;
 public class ModifiedStoreRequest {
 
     private String crn;
-    private List<Address> address;
+    private Address address;
 
     private String storeName;
 

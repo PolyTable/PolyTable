@@ -11,7 +11,6 @@ import kr.ac.kopo.polytable.store.dto.SimpleStoreResponse;
 import kr.ac.kopo.polytable.store.dto.StoreResponse;
 import kr.ac.kopo.polytable.store.error.DuplicateStoreInfoException;
 import kr.ac.kopo.polytable.store.error.StoreNotFoundException;
-import kr.ac.kopo.polytable.store.model.Address;
 import kr.ac.kopo.polytable.store.model.Store;
 import kr.ac.kopo.polytable.store.model.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.ModelMap;
 
 @Service
 @RequiredArgsConstructor
@@ -81,8 +79,7 @@ public class StoreService {
             store.modifiedCloseTime(request.getCloseTime());
         }
         if (request.getAddress() != null) {
-            Address paramAddress = Address.of(request.getAddress().get(0));
-            store.modifiedAddress(paramAddress);
+            store.modifiedAddress(request.getAddress());
         }
 
         Store savedStore = storeRepository.save(store);
@@ -108,9 +105,12 @@ public class StoreService {
     public StoreResponse getMyStoreInfo(final CustomUserDetails userDetails) {
         Member findMember = memberRepository.findById(userDetails.getId()).orElseThrow(MemberNotFoundException::new);
 
+        if (findMember.getStore() == null) {
+            throw new StoreNotFoundException("가게를 찾을 수 없습니다.");
+        }
+
         ModelMapper mapper = customModelMapper.standardMapper();
 
         return mapper.map(storeRepository.findById(findMember.getStore().getId()), StoreResponse.class);
     }
-
 }

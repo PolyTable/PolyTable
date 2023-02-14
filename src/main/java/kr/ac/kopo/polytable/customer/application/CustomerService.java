@@ -1,7 +1,6 @@
 package kr.ac.kopo.polytable.customer.application;
 
 import kr.ac.kopo.polytable.customer.dto.CustomerResponseDto;
-import kr.ac.kopo.polytable.customer.dto.CustomerSaveRequestDto;
 import kr.ac.kopo.polytable.customer.error.CustomerNotFoundException;
 import kr.ac.kopo.polytable.customer.error.DuplicatePhoneNumberException;
 import kr.ac.kopo.polytable.customer.model.Customer;
@@ -20,22 +19,13 @@ public class CustomerService {
     private final CustomModelMapper customModelMapper;
 
     @Transactional
-    public CustomerResponseDto createCustomer(CustomerSaveRequestDto request) {
+    public Long create(Customer request) {
         Customer findCustomer = customerRepository.findByPhone(request.getPhone());
 
         if (findCustomer != null) {
             throw new DuplicatePhoneNumberException();
         }
-
-        Customer newCustomer = Customer.builder()
-                .phone(request.getPhone())
-                .customerName(request.getCustomerName())
-                .build();
-
-        customerRepository.save(newCustomer);
-
-        ModelMapper mapper = customModelMapper.standardMapper();
-        return mapper.map(newCustomer, CustomerResponseDto.class);
+        return customerRepository.save(request).getId();
     }
 
     @Transactional

@@ -20,13 +20,4 @@ public class Address {
     private String city;
     private String road;
     private String zipcode;
-
-    public static Address of(Address address) {
-        return Address.builder()
-                .province(address.getProvince())
-                .city(address.getCity())
-                .road(address.getRoad())
-                .zipcode(address.getZipcode())
-                .build();
-    }
 }

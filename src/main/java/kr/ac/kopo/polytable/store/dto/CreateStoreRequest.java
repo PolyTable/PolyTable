@@ -1,16 +1,14 @@
 package kr.ac.kopo.polytable.store.dto;
 
-import kr.ac.kopo.polytable.member.model.Member;
 import kr.ac.kopo.polytable.store.model.Address;
 import kr.ac.kopo.polytable.store.model.Store;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Embedded;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
+
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,7 +22,7 @@ public class CreateStoreRequest {
     @NotNull
     private String crn;
 
-    private List<Address> address;
+    private Address address;
 
     private String storeTelNo;
 
@@ -37,14 +35,12 @@ public class CreateStoreRequest {
     private LocalTime closeTime;
 
     public Store toEntity() {
-        Address paramAdd = Address.of(address.get(0)
-        );
 
 
         return Store.builder()
                 .storeName(storeName)
                 .crn(crn)
-                .address(paramAdd)
+                .address(address)
                 .storeTelNo(storeTelNo)
                 .foundedDate(foundedDate)
                 .openTime(openTime)

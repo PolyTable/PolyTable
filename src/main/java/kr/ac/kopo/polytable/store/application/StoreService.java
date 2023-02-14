@@ -113,5 +113,4 @@ public class StoreService {
 
         return mapper.map(storeRepository.findById(findMember.getStore().getId()), StoreResponse.class);
     }
-
 }

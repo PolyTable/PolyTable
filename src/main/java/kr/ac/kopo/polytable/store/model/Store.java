@@ -118,4 +118,20 @@ public class Store {
     public void modifiedFoundedDate(LocalDate foundedDate) {
         this.foundedDate = foundedDate;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Store store = (Store) o;
+
+        return id.equals(store.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
 }

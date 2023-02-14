@@ -48,4 +48,10 @@ public class ReservationTime {
     public void addNewStore(Store store) {
         this.store = store;
     }
+
+    public void updateReservationTime(ReservationTime request) {
+        this.startTime = request.getStartTime();
+        this.endTime = request.getEndTime();
+        this.maximumHeads = request.getMaximumHeads();
+    }
 }

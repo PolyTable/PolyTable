@@ -1,7 +1,5 @@
 package kr.ac.kopo.polytable.store.model;
 
-import kr.ac.kopo.polytable.member.model.Member;
-import kr.ac.kopo.polytable.reservationtime.model.ReservationTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,33 +8,19 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+
 @Getter
+@Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store {
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "store_id")
-    private Long id;
 
     @Column(nullable = false)
     private String storeName;
 
     @Column(unique = true ,nullable = false)
     private String crn;
-
-    @OneToOne(mappedBy = "store")
-    private Member owner;
-
-    @OneToMany(mappedBy = "store")
-    private List<ReservationTime> reserveTime = new ArrayList<>();
 
     @Embedded
     @Column(nullable = false)
@@ -70,27 +54,6 @@ public class Store {
      * 비즈니스 로직
      */
 
-    public void bindingReserveTimeWithStore(ReservationTime reserveTime) {
-        this.reserveTime.add(reserveTime);
-        reserveTime.addNewStore(this);
-    }
-
-    public void bindingWithOwner(Member owner) {
-        this.owner = owner;
-        owner.addNewStore(this);
-    }
-
-
-    public void modifiedOwner(Member newOwner) {
-        this.owner.removeStoreFromOwner();
-        this.owner = newOwner;
-        newOwner.addNewStore(this);
-    }
-
-    public void removeOwner() {
-        this.owner = null;
-    }
-
     public void modifiedStoreName(String storeName) {
         this.storeName = storeName;
     }
@@ -119,19 +82,5 @@ public class Store {
         this.foundedDate = foundedDate;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Store store = (Store) o;
-
-        return id.equals(store.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
 
 }

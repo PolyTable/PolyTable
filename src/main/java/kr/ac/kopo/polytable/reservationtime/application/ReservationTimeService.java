@@ -8,8 +8,6 @@ import kr.ac.kopo.polytable.reservationtime.dto.ReservationTimeResponse;
 import kr.ac.kopo.polytable.reservationtime.error.ReservationTimeNotFoundException;
 import kr.ac.kopo.polytable.reservationtime.model.ReservationTime;
 import kr.ac.kopo.polytable.reservationtime.model.ReservationTimeRepository;
-import kr.ac.kopo.polytable.store.error.StoreNotFoundException;
-import kr.ac.kopo.polytable.store.model.Store;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -30,26 +28,24 @@ public class ReservationTimeService {
     public Long create(ReservationTime reservationTime, Long memberId) {
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        Store store = member.getStore();
 
-        if (store == null) {
-            throw new StoreNotFoundException("회원의 가게가 존재하지 않습니다");
+        if (member == null) {
+            throw new MemberNotFoundException();
         }
 
-        reservationTime.addNewStore(store);
+        reservationTime.addNewMember(member);
 
         return reservationTimeRepository.save(reservationTime).getId();
     }
 
     public List<ReservationTimeResponse> findAll(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        Store store = member.getStore();
 
-        if (store == null) {
-            throw new StoreNotFoundException("회원의 가게가 존재하지 않습니다");
+        if (member == null) {
+            throw new MemberNotFoundException();
         }
 
-        return store.getReserveTime()
+        return member.getReservationTimes()
                 .stream()
                 .map(rt -> new ReservationTimeResponse(
                         rt.getId(),
@@ -62,12 +58,11 @@ public class ReservationTimeService {
 
     public ReservationTimeResponse findById(Long reservationTimeId, Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        Store store = member.getStore();
 
         ReservationTime reservationTime = reservationTimeRepository
                 .findById(reservationTimeId).orElseThrow(ReservationTimeNotFoundException::new);
 
-        if (store.equals(reservationTime.getStore())) {
+        if (member.equals(reservationTime.getMember())) {
             //에러발생
             throw new RuntimeException("사용자의 가게에 속해있는 예약시간이 아닙니다.");
         }
@@ -78,12 +73,11 @@ public class ReservationTimeService {
 
     public void update(ReservationTime updateRequest, Long reservationTimeId, Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        Store store = member.getStore();
 
         ReservationTime reservationTime = reservationTimeRepository
                 .findById(reservationTimeId).orElseThrow(ReservationTimeNotFoundException::new);
 
-        if (store.equals(reservationTime.getStore())) {
+        if (member.equals(reservationTime.getMember())) {
             //에러발생
             throw new RuntimeException("사용자의 가게에 속해있는 예약시간이 아닙니다.");
         }
@@ -93,12 +87,11 @@ public class ReservationTimeService {
 
     public void delete(Long reservationTimeId, Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        Store store = member.getStore();
 
         ReservationTime reservationTime = reservationTimeRepository
                 .findById(reservationTimeId).orElseThrow(ReservationTimeNotFoundException::new);
 
-        if (store.equals(reservationTime.getStore())) {
+        if (member.equals(reservationTime.getMember())) {
             //에러발생
             throw new RuntimeException("사용자의 가게에 속해있는 예약시간이 아닙니다.");
         }

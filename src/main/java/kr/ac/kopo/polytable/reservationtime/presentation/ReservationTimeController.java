@@ -7,9 +7,8 @@ import kr.ac.kopo.polytable.reservationtime.dto.ReservationTimeResponse;
 import kr.ac.kopo.polytable.reservationtime.dto.ReservationTimeSaveRequest;
 import kr.ac.kopo.polytable.reservationtime.dto.ReservationTimeUpdateRequest;
 import kr.ac.kopo.polytable.reservationtime.dto.SimpleReservationTimeResponse;
-import kr.ac.kopo.polytable.reservationtime.model.ReservationTime;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +25,7 @@ public class ReservationTimeController {
     private final ReservationTimeService reservationTimeService;
     private final CustomModelMapper customModelMapper;
 
+    
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     public SimpleReservationTimeResponse createReservationTime(@Validated @RequestBody ReservationTimeSaveRequest request,

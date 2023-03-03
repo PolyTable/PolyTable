@@ -1,5 +1,8 @@
 package kr.ac.kopo.polytable.reservationtime.model;
 
+import kr.ac.kopo.polytable.member.model.Member;
+import kr.ac.kopo.polytable.reservation.model.Reservation;
+import kr.ac.kopo.polytable.reservationtime.error.MaximumHeadsOverCapacityException;
 import kr.ac.kopo.polytable.store.model.Store;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,19 +23,20 @@ public class ReservationTime {
     @Column(name = "reservation_time_id")
     private Long id;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
-    private Store store;
-
     @Column(nullable = false)
     private LocalTime startTime;
     @Column(nullable = false)
     private LocalTime endTime;
-
-
     @Column(nullable = false)
     private Integer maximumHeads;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @OneToMany(mappedBy = "reservationTime")
+    private List<Reservation> reservations = new ArrayList<>();
+
 
     @Builder
     public ReservationTime(LocalTime startTime, LocalTime endTime, Integer maximumHeads) {
@@ -45,13 +49,20 @@ public class ReservationTime {
      * core
      */
 
-    public void addNewStore(Store store) {
-        this.store = store;
+
+    public void addNewMember(Member member) {
+        this.member = member;
     }
 
     public void updateReservationTime(ReservationTime request) {
         this.startTime = request.getStartTime();
         this.endTime = request.getEndTime();
         this.maximumHeads = request.getMaximumHeads();
+    }
+
+    public void validMaximumHeads(Integer headCount) {
+        if (this.maximumHeads < headCount) {
+            throw new MaximumHeadsOverCapacityException();
+        }
     }
 }

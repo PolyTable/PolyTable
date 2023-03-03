@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 @Data
-public class CustomerResponseDto {
+public class CustomerResponse {
     String phone;
     String customerName;
 

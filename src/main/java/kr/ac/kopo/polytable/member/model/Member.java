@@ -1,6 +1,8 @@
 package kr.ac.kopo.polytable.member.model;
 
 import kr.ac.kopo.polytable.member.dto.RoleType;
+import kr.ac.kopo.polytable.reservation.model.Reservation;
+import kr.ac.kopo.polytable.reservationtime.model.ReservationTime;
 import kr.ac.kopo.polytable.store.model.Store;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,6 +13,9 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,10 +35,8 @@ public class Member {
     private String password;
     private LocalDateTime lastModifiedPwdDate;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @Embedded
     private Store store;
-
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -47,6 +50,12 @@ public class Member {
 
     @Column(unique = true, nullable = false)
     private String telNo;
+
+    @OneToMany(mappedBy = "member")
+    private List<Reservation> reservations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<ReservationTime> reservationTimes = new ArrayList<>();
 
     @Builder
     public Member(String email, String username, String password, RoleType roleType , String name, LocalDate birthDate, String telNo) {
@@ -108,5 +117,20 @@ public class Member {
 
     public void turnOffAccount() {
         this.activated = false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Member member = (Member) o;
+
+        return Objects.equals(id, member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

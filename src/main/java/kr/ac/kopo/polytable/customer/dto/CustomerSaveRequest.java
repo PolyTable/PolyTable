@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 @Data
-public class CustomerSaveRequestDto {
+public class CustomerSaveRequest {
 
     private String phone;
     private String customerName;

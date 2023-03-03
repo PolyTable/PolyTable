@@ -33,13 +33,15 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public TokenDTO login(final String username, final String password) {
-        Member member = memberRepository.findByUsername(username).orElseThrow(() -> new MemberNotFoundException());
+        Member member = memberRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
         String encodePassword = passwordEncoder.encode(password);
 
         if (passwordEncoder.matches(password, member.getPassword())){
             CustomUserDetails userDetails = memberRepository.findUserDetailsByUsername(username)
-                    .orElseThrow(() -> new MemberNotFoundException());
+                    .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, encodePassword);
 

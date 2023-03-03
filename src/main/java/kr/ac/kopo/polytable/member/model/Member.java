@@ -3,7 +3,6 @@ package kr.ac.kopo.polytable.member.model;
 import kr.ac.kopo.polytable.member.dto.RoleType;
 import kr.ac.kopo.polytable.reservation.model.Reservation;
 import kr.ac.kopo.polytable.reservationtime.model.ReservationTime;
-import kr.ac.kopo.polytable.store.model.Store;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

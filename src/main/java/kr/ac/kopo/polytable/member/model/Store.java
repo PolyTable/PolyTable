@@ -1,4 +1,4 @@
-package kr.ac.kopo.polytable.store.model;
+package kr.ac.kopo.polytable.member.model;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import java.time.LocalDate;
 import java.time.LocalTime;
 

@@ -11,7 +11,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class ReservationTimeResponse {
 
-    private Long reservationId;
+    private Long reservationTimeId;
     private LocalTime startTime;
     private LocalTime endTime;
     private Integer maximumHeads;

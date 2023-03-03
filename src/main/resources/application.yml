@@ -15,9 +15,6 @@ spring:
 #    host: 127.0.0.1
 #    password: 'redisAdmin'
 
-
-
-
   jpa:
     hibernate:
       ddl-auto: create-drop

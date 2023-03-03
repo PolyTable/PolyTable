@@ -61,28 +61,12 @@ public class MemberService {
                         .findById(userDetails.getId())
                         .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
-        if (request.getEmail() != null) {
-            member.modifiedEmail(request.getEmail());
-        }
-
         if (request.getPassword() != null) {
             String encodePassword = passwordEncoder.encode(request.getPassword());
-            member.modifiedPwd(encodePassword);
+            request.setPassword(encodePassword);
         }
 
-        if (request.getBirthDate() != null) {
-            member.modifiedBirthDate(request.getBirthDate());
-        }
-
-        if (request.getName() != null) {
-            member.modifiedName(request.getName());
-        }
-
-        if (request.getTelNo() != null) {
-            member.modifiedTelNo(request.getTelNo());
-        }
-
-        memberRepository.save(member);
+        member.changeNewInfo(request);
 
         return memberRepository.findById(userDetails.getId())
                 .map(MemberResponse::of)
@@ -95,7 +79,6 @@ public class MemberService {
                         .findById(userDetails.getId())
                         .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
         findMember.turnOffAccount();
-        memberRepository.save(findMember);
     }
 
     @Transactional(readOnly = true)

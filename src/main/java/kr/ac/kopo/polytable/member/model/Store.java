@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -19,25 +20,32 @@ import java.time.LocalTime;
 public class Store {
 
     @Column(nullable = false)
+    @NotNull
     private String storeName;
 
     @Column(unique = true ,nullable = false)
+    @NotNull
     private String crn;
 
     @Embedded
     @Column(nullable = false)
+    @NotNull
     private Address address;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull
     private LocalDate foundedDate;
 
     @Column(unique = true, nullable = false)
+    @NotNull
     private String storeTelNo;
 
     @DateTimeFormat(pattern = "HH:mm")
+    @NotNull
     private LocalTime openTime;
     @DateTimeFormat(pattern = "HH:mm")
+    @NotNull
     private LocalTime closeTime;
 
 
@@ -51,38 +59,5 @@ public class Store {
         this.openTime = openTime;
         this.closeTime = closeTime;
     }
-
-    /**
-     * 비즈니스 로직
-     */
-
-    public void modifiedStoreName(String storeName) {
-        this.storeName = storeName;
-    }
-
-    public void modifiedCrn(String crn) {
-        this.crn = crn;
-    }
-
-    public void modifiedAddress(Address address) {
-        this.address = address;
-    }
-
-    public void modifiedStoreTelNo(String storeTelNo) {
-        this.storeTelNo = storeTelNo;
-    }
-
-    public void modifiedOpenTime(LocalTime openTime) {
-        this.openTime = openTime;
-    }
-
-    public void modifiedCloseTime(LocalTime closeTime) {
-        this.closeTime = closeTime;
-    }
-
-    public void modifiedFoundedDate(LocalDate foundedDate) {
-        this.foundedDate = foundedDate;
-    }
-
 
 }

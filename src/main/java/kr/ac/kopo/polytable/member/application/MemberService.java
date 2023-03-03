@@ -1,6 +1,8 @@
 package kr.ac.kopo.polytable.member.application;
 
 
+import kr.ac.kopo.polytable.certification.application.EmailService;
+import kr.ac.kopo.polytable.certification.error.NotFoundCertificationHistoryException;
 import kr.ac.kopo.polytable.customer.error.DuplicatePhoneNumberException;
 import kr.ac.kopo.polytable.global.security.principal.CustomUserDetails;
 import kr.ac.kopo.polytable.member.dto.MemberResponse;
@@ -32,6 +34,8 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final EmailService emailService;
+
     public SimpleMemberResponse create(final Member member) {
         if (memberRepository.findByUsername(member.getUsername()).isPresent()) {
             throw new DuplicateUsernameException("이미 가입된 아이디입니다.");
@@ -49,6 +53,36 @@ public class MemberService {
         member.activatedAccount();
 
         Member savedMember = memberRepository.save(member);
+
+        ModelMapper mapper = customModelMapper.standardMapper();
+
+        return mapper.map(savedMember, SimpleMemberResponse.class);
+    }
+
+    public SimpleMemberResponse createWithEmailCertification(final Member member) {
+        if (memberRepository.findByUsername(member.getUsername()).isPresent()) {
+            throw new DuplicateUsernameException("이미 가입된 아이디입니다.");
+        }
+
+        if (memberRepository.findByEmail(member.getEmail()).isPresent()) {
+            Member findMember = memberRepository.findByEmail(member.getEmail()).get();
+            if (!findMember.isActivated()) {
+                throw new NotFoundCertificationHistoryException("인증되지 않은 계정입니다.");
+            } else {
+                throw new DuplicateEmailException("이미 가입된 이메일입니다.");
+            }
+        }
+
+        if (memberRepository.findByTelNo(member.getTelNo()).isPresent()) {
+            throw new DuplicateTelNoException("이미 가입된 전화번호입니다.");
+        }
+
+        member.setPassword(passwordEncoder.encode(member.getPassword()));
+        member.turnOffAccount();
+
+        Member savedMember = memberRepository.save(member);
+
+        emailService.sendMail(member.getEmail());
 
         ModelMapper mapper = customModelMapper.standardMapper();
 

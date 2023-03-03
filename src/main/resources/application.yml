@@ -14,7 +14,7 @@ spring:
 #    port: 6379
 #    host: 127.0.0.1
 #    password: 'redisAdmin'
-
+#
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -23,6 +23,15 @@ spring:
       hibernate:
         format_sql: true
 
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: zoodisx@gmail.com
+    password: enter your password
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 jwt:
   header: Authorization

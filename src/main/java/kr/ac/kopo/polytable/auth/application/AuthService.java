@@ -29,7 +29,7 @@ public class AuthService {
     private final AuthenticationManagerBuilder managerBuilder;
     private final TokenProvider tokenProvider;
 
-    private static final String ERROR_NO_MEMBER = "해당 회원이 존재하지 않습니다.";
+    private static final String ERROR_NO_MEMBER = "아이디나 비밀번호가 일치하지 않습니다.";
     private final PasswordEncoder passwordEncoder;
 
     public TokenDTO login(final String username, final String password) {

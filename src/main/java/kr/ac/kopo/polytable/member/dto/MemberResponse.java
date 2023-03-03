@@ -1,6 +1,7 @@
 package kr.ac.kopo.polytable.member.dto;
 
 import kr.ac.kopo.polytable.member.model.Member;
+import kr.ac.kopo.polytable.member.model.Store;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class MemberResponse {
     private String name;
     private int age;
     private String telNo;
+    private Store store;
 
     public static MemberResponse of(final Member member) {
         int memberYear = member.getBirthDate().getYear();
@@ -30,6 +32,7 @@ public class MemberResponse {
                 member.getUsername(),
                 member.getName(),
                 age,
-                member.getTelNo());
+                member.getTelNo(),
+                member.getStore());
     }
 }

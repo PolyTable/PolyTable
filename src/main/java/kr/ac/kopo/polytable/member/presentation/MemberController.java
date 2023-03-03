@@ -24,7 +24,6 @@ public class MemberController {
 
     private final MemberService memberService;
 
-
     @PostMapping("/public/members")
     public ResponseEntity<SimpleMemberResponse> create(@Valid @RequestBody CreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.create(request.toEntity()));
@@ -36,7 +35,7 @@ public class MemberController {
     }
 
     @PutMapping("/members")
-    public ResponseEntity<MemberResponse> modifiedMemberInfo(@Valid @RequestBody ModifiedRequest request) throws URISyntaxException {
+    public ResponseEntity<MemberResponse> modifiedMemberInfo(@Valid @RequestBody ModifiedRequest request) {
         return ResponseEntity.ok().body(memberService.modified(this.getPrincipal(), request));
     }
 

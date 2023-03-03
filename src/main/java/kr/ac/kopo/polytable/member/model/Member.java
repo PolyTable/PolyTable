@@ -1,5 +1,6 @@
 package kr.ac.kopo.polytable.member.model;
 
+import kr.ac.kopo.polytable.member.dto.ModifiedRequest;
 import kr.ac.kopo.polytable.member.dto.RoleType;
 import kr.ac.kopo.polytable.reservation.model.Reservation;
 import kr.ac.kopo.polytable.reservationtime.model.ReservationTime;
@@ -7,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -57,7 +59,7 @@ public class Member {
     private List<ReservationTime> reservationTimes = new ArrayList<>();
 
     @Builder
-    public Member(String email, String username, String password, RoleType roleType , String name, LocalDate birthDate, String telNo) {
+    public Member(String email, String username, String password, RoleType roleType , String name, LocalDate birthDate, String telNo, Store store) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -66,25 +68,22 @@ public class Member {
         this.name = name;
         this.birthDate = birthDate;
         this.telNo = telNo;
+        this.store = store;
     }
-
-
-
 
     /**
      * 비즈니스 로직
      */
 
-    public void addNewStore(Store store) {
-        this.store = store;
-    }
-
-    public void removeStoreFromOwner() {
-        this.store = null;
-    }
-
-    public void modifiedEmail(String email) {
-        this.email = email;
+    public void changeNewInfo(ModifiedRequest request) {
+        this.email = request.getEmail();
+        if (request.getPassword() != null) {
+            this.modifiedPwd(request.getPassword());
+        }
+        this.birthDate = request.getBirthDate();
+        this.name = request.getName();
+        this.telNo = request.getTelNo();
+        this.store = request.getStore();
     }
 
     public void modifiedPwd(String password) {
@@ -93,18 +92,6 @@ public class Member {
         LocalDateTime date = LocalDateTime.now();
         date.format(DateTimeFormatter.BASIC_ISO_DATE);
         this.lastModifiedPwdDate = date;
-    }
-
-    public void modifiedName(String name) {
-        this.name = name;
-    }
-
-    public void modifiedBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public void modifiedTelNo(String telNo) {
-        this.telNo = telNo;
     }
 
     public void setPassword(String password) {

@@ -27,10 +27,12 @@ public class ReservationTimeService {
 
     public Long create(ReservationTime reservationTime, Long memberId) {
 
-        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository
+                .findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
         if (member == null) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException("존재하지 않는 사용자입니다.");
         }
 
         reservationTime.addNewMember(member);
@@ -39,10 +41,12 @@ public class ReservationTimeService {
     }
 
     public List<ReservationTimeResponse> findAll(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository
+                .findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
         if (member == null) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException("존재하지 않는 사용자입니다.");
         }
 
         return member.getReservationTimes()
@@ -57,7 +61,9 @@ public class ReservationTimeService {
 
 
     public ReservationTimeResponse findById(Long reservationTimeId, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository
+                        .findById(memberId)
+                        .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
         ReservationTime reservationTime = reservationTimeRepository
                 .findById(reservationTimeId).orElseThrow(ReservationTimeNotFoundException::new);
@@ -72,7 +78,9 @@ public class ReservationTimeService {
     }
 
     public void update(ReservationTime updateRequest, Long reservationTimeId, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository
+                .findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
         ReservationTime reservationTime = reservationTimeRepository
                 .findById(reservationTimeId).orElseThrow(ReservationTimeNotFoundException::new);
@@ -86,7 +94,9 @@ public class ReservationTimeService {
     }
 
     public void delete(Long reservationTimeId, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository
+                .findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
         ReservationTime reservationTime = reservationTimeRepository
                 .findById(reservationTimeId).orElseThrow(ReservationTimeNotFoundException::new);

@@ -56,7 +56,10 @@ public class MemberService {
     }
 
     public MemberResponse modified(final CustomUserDetails userDetails, final ModifiedRequest request) {
-        Member member = memberRepository.findById(userDetails.getId()).orElseThrow(MemberNotFoundException::new);
+        Member member =
+                memberRepository
+                        .findById(userDetails.getId())
+                        .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
         if (request.getEmail() != null) {
             member.modifiedEmail(request.getEmail());
@@ -83,11 +86,14 @@ public class MemberService {
 
         return memberRepository.findById(userDetails.getId())
                 .map(MemberResponse::of)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
     }
 
     public void turnOffAccount(CustomUserDetails userDetails) {
-        Member findMember = memberRepository.findById(userDetails.getId()).orElseThrow(MemberNotFoundException::new);
+        Member findMember =
+                memberRepository
+                        .findById(userDetails.getId())
+                        .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
         findMember.turnOffAccount();
         memberRepository.save(findMember);
     }
@@ -97,6 +103,6 @@ public class MemberService {
 
         return memberRepository.findById(userDetails.getId())
                 .map(MemberResponse::of)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
     }
 }

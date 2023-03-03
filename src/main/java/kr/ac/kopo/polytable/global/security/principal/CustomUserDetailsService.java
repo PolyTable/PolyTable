@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
     public static final MemberNotFoundException NOT_FOUND_EXCEPTION =
-            new MemberNotFoundException();
+            new MemberNotFoundException("존재하지 않는 사용자입니다.");
     private final MemberRepository memberRepository;
 
     @Override

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -60,6 +61,7 @@ public class Reservation {
 
     public void updateReservation(Reservation request) {
         this.heads = request.getHeads();
-        this.regDate = request.getRegDate();
     }
+
+
 }

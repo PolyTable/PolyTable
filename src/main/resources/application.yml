@@ -24,14 +24,14 @@ spring:
         format_sql: true
 
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: zoodisx@gmail.com
-    password: enter your password
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: enter your email
+#    password: enter your password
+#    properties:
+#      mail.smtp.auth: true
+#      mail.smtp.starttls.enable: true
 
 jwt:
   header: Authorization

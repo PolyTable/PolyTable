@@ -24,6 +24,7 @@ public class CertificationService {
             Member findMember = memberRepository.findByEmail(email).orElseThrow(() ->
                     new MemberNotFoundException("존재하지 않는 회원입니다."));
             findMember.activatedAccount();
+            redisUtil.deleteData(email);
             return true;
         } else
             return false;

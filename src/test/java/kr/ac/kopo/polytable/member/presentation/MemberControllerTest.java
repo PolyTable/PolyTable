@@ -3,24 +3,30 @@ package kr.ac.kopo.polytable.member.presentation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import kr.ac.kopo.polytable.global.security.principal.CustomUserDetails;
 import kr.ac.kopo.polytable.member.dto.ModifiedRequest;
+import kr.ac.kopo.polytable.member.error.MemberNotFoundException;
 import kr.ac.kopo.polytable.member.model.Address;
 import kr.ac.kopo.polytable.member.model.Member;
 import kr.ac.kopo.polytable.member.model.Store;
+import kr.ac.kopo.polytable.member.model.repository.MemberRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,6 +36,9 @@ class MemberControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Test
     void createMemberAndStoreTest() throws Exception {
@@ -169,6 +178,45 @@ class MemberControllerTest {
         mockMvc.perform(put("/api/members")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @WithUserDetails(value = "test")
+    void turnOffAccountTest() throws Exception {
+
+        mockMvc.perform(delete("/api/members"))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+
+        Member findMember = memberRepository.findByUsername("test").orElseThrow(
+                () -> new MemberNotFoundException("존재하지 않는 멤버")
+        );
+
+        assertThat(findMember.isActivated()).isFalse();
+    }
+
+    @Test
+    @WithUserDetails(value = "test")
+    void principalCheckTest() {
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        final String username = userDetails.getUsername();
+
+        Member findMember = memberRepository.findByUsername(username).orElseThrow(
+                () -> new MemberNotFoundException("존재하지 않는 멤버")
+        );
+
+        assertThat(findMember.getUsername()).isEqualTo(username);
+    }
+
+    @Test
+    @WithUserDetails(value = "test")
+    void getMyInfoTest() throws Exception {
+
+        mockMvc.perform(get("/api/members"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }

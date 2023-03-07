@@ -53,7 +53,7 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenDTO createToken(Long memberId, Authentication authentication) {
+    public TokenDTO createToken(String username, Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -63,7 +63,7 @@ public class TokenProvider implements InitializingBean {
         long now = (new Date()).getTime();
 
         String accessToken = Jwts.builder()
-                .claim("id", memberId.toString())
+                .claim("username", username)
                 .claim(AUTHORITIES_KEY, authorities)
                 .setExpiration(new Date(now + accessTokenValidityInMilliseconds))
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -71,7 +71,7 @@ public class TokenProvider implements InitializingBean {
 
         String refreshToken = Jwts.builder()
                 .claim(AUTHORITIES_KEY, authorities)
-                .claim("id", memberId.toString())
+                .claim("username", username)
                 .setExpiration(new Date(now + refreshTokenValidityInMilliseconds))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
@@ -99,14 +99,14 @@ public class TokenProvider implements InitializingBean {
         String username = String.valueOf(claims.get("username"));
 
 
-        CustomUserDetails principal = customUserDetailsService.loadUserByUsername(id);
+        CustomUserDetails principal = customUserDetailsService.loadUserByUsername(username);
 
         return new UsernamePasswordAuthenticationToken(principal, "password", authorities);
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key.getEncoded()).build().parseClaimsJws(token);
 
             return true;
         } catch (SecurityException | MalformedJwtException e) {

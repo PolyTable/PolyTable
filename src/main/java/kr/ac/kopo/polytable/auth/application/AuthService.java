@@ -48,7 +48,7 @@ public class AuthService {
             Authentication authentication = managerBuilder.getObject().authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            return tokenProvider.createToken(userDetails.getId(), authentication);
+            return tokenProvider.createToken(userDetails.getUsername(), authentication);
         } else throw new MemberInfoMismatchException(ERROR_NO_MEMBER);
     }
 
@@ -60,7 +60,7 @@ public class AuthService {
         Authentication authentication = tokenProvider.getAuthentication(refreshToken);
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return tokenProvider.createToken(principal.getId(), authentication).getAccessToken();
+        return tokenProvider.createToken(principal.getUsername(), authentication).getAccessToken();
     }
 
 }

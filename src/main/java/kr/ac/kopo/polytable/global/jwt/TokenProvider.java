@@ -96,6 +96,8 @@ public class TokenProvider implements InitializingBean {
                         .collect(Collectors.toList());
 
         String id = String.valueOf(claims.get("id"));
+        String username = String.valueOf(claims.get("username"));
+
 
         CustomUserDetails principal = customUserDetailsService.loadUserByUsername(id);
 

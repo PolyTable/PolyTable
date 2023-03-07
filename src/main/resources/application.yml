@@ -1,19 +1,19 @@
 spring:
-#  datasource:
-#    url: jdbc:mariadb://localhost:3306/polytable
-#    driver-class-name: org.mariadb.jdbc.Driver
-#    username: polytable
-#    password: 1234
-#
-#  redis:
-#    lettuce:
-#      pool:
-#        max-active: 10
-#        max-idle: 8
-#        min-idle: 2
-#    port: 6379
-#    host: 127.0.0.1
-#    password: 'redisAdmin'
+  datasource:
+    url: jdbc:mariadb://localhost:3306/polytable
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: polytable
+    password: 1234
+
+  redis:
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 8
+        min-idle: 2
+    port: 6379
+    host: 127.0.0.1
+    password: 'redisAdmin'
 #
   jpa:
     hibernate:
@@ -24,14 +24,14 @@ spring:
         format_sql: true
 
 
-#  mail:
-#    host: smtp.gmail.com
-#    port: 587
-#    username: enter your email
-#    password: enter your password
-#    properties:
-#      mail.smtp.auth: true
-#      mail.smtp.starttls.enable: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: enter your email
+    password: enter your password
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 jwt:
   header: Authorization

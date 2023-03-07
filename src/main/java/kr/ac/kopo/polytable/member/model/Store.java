@@ -20,32 +20,25 @@ import java.time.LocalTime;
 public class Store {
 
     @Column(nullable = false)
-    @NotNull
     private String storeName;
 
     @Column(unique = true ,nullable = false)
-    @NotNull
     private String crn;
 
     @Embedded
     @Column(nullable = false)
-    @NotNull
     private Address address;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull
     private LocalDate foundedDate;
 
     @Column(unique = true, nullable = false)
-    @NotNull
     private String storeTelNo;
 
     @DateTimeFormat(pattern = "HH:mm")
-    @NotNull
     private LocalTime openTime;
     @DateTimeFormat(pattern = "HH:mm")
-    @NotNull
     private LocalTime closeTime;
 
 

@@ -38,10 +38,13 @@ public class ReservationTime {
 
 
     @Builder
-    public ReservationTime(LocalTime startTime, LocalTime endTime, Integer maximumHeads) {
+    public ReservationTime(Long id, LocalTime startTime, LocalTime endTime, Integer maximumHeads, Member member, List<Reservation> reservations) {
+        this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.maximumHeads = maximumHeads;
+        this.member = member;
+        this.reservations = reservations;
     }
 
     /**
@@ -64,4 +67,6 @@ public class ReservationTime {
             throw new MaximumHeadsOverCapacityException();
         }
     }
+
+
 }

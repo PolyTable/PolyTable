@@ -31,10 +31,6 @@ public class ReservationTimeService {
                 .findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
-        if (member == null) {
-            throw new MemberNotFoundException("존재하지 않는 사용자입니다.");
-        }
-
         reservationTime.addNewMember(member);
 
         return reservationTimeRepository.save(reservationTime).getId();
@@ -66,7 +62,8 @@ public class ReservationTimeService {
                         .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
         ReservationTime reservationTime = reservationTimeRepository
-                .findById(reservationTimeId).orElseThrow(ReservationTimeNotFoundException::new);
+                .findById(reservationTimeId)
+                .orElseThrow(() -> new ReservationTimeNotFoundException("존재하지 않는 예약시간입니다."));
 
         if (member.equals(reservationTime.getMember())) {
             //에러발생
@@ -83,9 +80,10 @@ public class ReservationTimeService {
                 .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
         ReservationTime reservationTime = reservationTimeRepository
-                .findById(reservationTimeId).orElseThrow(ReservationTimeNotFoundException::new);
+                .findById(reservationTimeId)
+                .orElseThrow(() -> new ReservationTimeNotFoundException("존재하지 않는 예약시간입니다."));
 
-        if (member.equals(reservationTime.getMember())) {
+        if (!member.equals(reservationTime.getMember())) {
             //에러발생
             throw new RuntimeException("사용자의 가게에 속해있는 예약시간이 아닙니다.");
         }
@@ -99,7 +97,8 @@ public class ReservationTimeService {
                 .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
         ReservationTime reservationTime = reservationTimeRepository
-                .findById(reservationTimeId).orElseThrow(ReservationTimeNotFoundException::new);
+                .findById(reservationTimeId)
+                .orElseThrow(() -> new ReservationTimeNotFoundException("존재하지 않는 예약시간입니다."));
 
         if (member.equals(reservationTime.getMember())) {
             //에러발생

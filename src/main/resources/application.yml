@@ -1,9 +1,9 @@
 spring:
-  datasource:
-    url: jdbc:mariadb://localhost:3306/polytable
-    driver-class-name: org.mariadb.jdbc.Driver
-    username: polytable
-    password: 1234
+#  datasource:
+#    url: jdbc:mariadb://localhost:3306/polytable
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    username: polytable
+#    password: 1234
 
   redis:
     lettuce:
@@ -14,7 +14,7 @@ spring:
     port: 6379
     host: 127.0.0.1
     password: 'redisAdmin'
-#
+
   jpa:
     hibernate:
       ddl-auto: create-drop

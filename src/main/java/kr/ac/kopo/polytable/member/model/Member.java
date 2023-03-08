@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -59,17 +58,22 @@ public class Member {
     private List<ReservationTime> reservationTimes = new ArrayList<>();
 
     @Builder
-    public Member(String email, String username, String password, RoleType roleType , String name, LocalDate birthDate, String telNo, Store store) {
+    public Member(Long id, String email, String username, String password, LocalDateTime lastModifiedPwdDate, Store store, RoleType roleType, boolean activated, String name, LocalDate birthDate, String telNo, List<Reservation> reservations, List<ReservationTime> reservationTimes) {
+        this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.lastModifiedPwdDate = lastModifiedPwdDate;
+        this.store = store;
         this.roleType = roleType;
-        this.activated = true;
+        this.activated = activated;
         this.name = name;
         this.birthDate = birthDate;
         this.telNo = telNo;
-        this.store = store;
+        this.reservations = reservations;
+        this.reservationTimes = reservationTimes;
     }
+
 
     /**
      * 비즈니스 로직

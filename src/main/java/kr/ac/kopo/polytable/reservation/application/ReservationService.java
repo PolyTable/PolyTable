@@ -40,7 +40,7 @@ public class ReservationService {
 
         ReservationTime reservationTime =
                 reservationTimeRepository
-                        .findById(reservationTimeId).orElseThrow(() -> new ReservationTimeNotFoundException());
+                        .findById(reservationTimeId).orElseThrow(() -> new ReservationTimeNotFoundException("존재하지 않는 예약시간입니다."));
 
         Integer headsOfReservationTime =
                 reservationRepository.countByReservePeople(request.getRegDate(), reservationTimeId);
@@ -92,9 +92,11 @@ public class ReservationService {
      * @param memberId = 현재 사용자 아이디
      */
     public void delete(Long reservationId, Long memberId) {
-        memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
+        memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
 
-        reservationRepository.findById(reservationId).orElseThrow(() -> new ReservationNotFoundException());
+        reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ReservationTimeNotFoundException("존재하지 않는 예약시간입니다."));
 
         reservationRepository.deleteById(reservationId);
 

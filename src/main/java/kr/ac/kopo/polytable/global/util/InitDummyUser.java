@@ -13,7 +13,7 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Service
+//@Service
 @RequiredArgsConstructor
 public class InitDummyUser {
 

@@ -31,9 +31,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final CustomModelMapper customModelMapper;
-
     private final PasswordEncoder passwordEncoder;
-
     private final EmailService emailService;
 
     public SimpleMemberResponse create(final Member member) {

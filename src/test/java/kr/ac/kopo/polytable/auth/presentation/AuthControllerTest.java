@@ -1,31 +1,22 @@
 package kr.ac.kopo.polytable.auth.presentation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.kopo.polytable.auth.application.AuthService;
 import kr.ac.kopo.polytable.auth.dto.LoginRequest;
 import kr.ac.kopo.polytable.global.jwt.TokenProvider;
 import kr.ac.kopo.polytable.global.jwt.dto.TokenDTO;
-import kr.ac.kopo.polytable.global.jwt.vo.RefreshToken;
-import kr.ac.kopo.polytable.global.security.principal.CustomUserDetailsService;
 import kr.ac.kopo.polytable.member.application.MemberService;
 import kr.ac.kopo.polytable.member.dto.CreateRequest;
 import kr.ac.kopo.polytable.member.dto.RoleType;
-import kr.ac.kopo.polytable.member.model.Member;
-import kr.ac.kopo.polytable.member.model.repository.MemberRepository;
 import kr.ac.kopo.polytable.member.util.GetMemberInfo;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 

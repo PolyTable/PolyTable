@@ -2,10 +2,19 @@ package kr.ac.kopo.polytable.reservationtime.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import kr.ac.kopo.polytable.auth.application.AuthService;
+import kr.ac.kopo.polytable.global.security.principal.CustomUserDetails;
+import kr.ac.kopo.polytable.member.application.MemberService;
+import kr.ac.kopo.polytable.member.dto.CreateRequest;
+import kr.ac.kopo.polytable.member.dto.RoleType;
+import kr.ac.kopo.polytable.member.model.Member;
+import kr.ac.kopo.polytable.member.model.repository.MemberRepository;
+import kr.ac.kopo.polytable.member.util.GetMemberInfo;
 import kr.ac.kopo.polytable.reservationtime.application.ReservationTimeService;
 import kr.ac.kopo.polytable.reservationtime.dto.ReservationTimeResponse;
 import kr.ac.kopo.polytable.reservationtime.dto.ReservationTimeSaveRequest;
 import kr.ac.kopo.polytable.reservationtime.model.ReservationTimeRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,7 +23,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,18 +36,32 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@Transactional
 @AutoConfigureMockMvc
 class ReservationTimeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    AuthService authService;
+    @Autowired
+    MemberService memberService;
+
     @MockBean
     private ReservationTimeService reservationTimeService;
 
+    private final String USERNAME = "test";
+    private final String PASSWORD = "test";
+
+    @BeforeEach
+    void setUp() {
+        CreateRequest request = GetMemberInfo.bingingMember();
+        memberService.create(request.toEntity());
+        authService.login(USERNAME, PASSWORD);
+    }
 
     @Test
-    @WithUserDetails(value = "test")
     void 예약시간_생성() throws Exception {
         ObjectMapper om = new ObjectMapper();
 
@@ -59,7 +84,6 @@ class ReservationTimeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "test")
     void 예약시간_모두조회() throws Exception {
         ReservationTimeResponse data1 = ReservationTimeResponse.builder()
                 .reservationTimeId(1L)
@@ -89,7 +113,6 @@ class ReservationTimeControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "test")
     void 예약시간_단건조회() throws Exception {
         ReservationTimeResponse data1 = ReservationTimeResponse.builder()
                 .reservationTimeId(1L)

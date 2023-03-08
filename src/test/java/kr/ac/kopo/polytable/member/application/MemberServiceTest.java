@@ -1,25 +1,31 @@
 package kr.ac.kopo.polytable.member.application;
 
-import kr.ac.kopo.polytable.member.dto.RoleType;
-import kr.ac.kopo.polytable.member.dto.SimpleMemberResponse;
+import kr.ac.kopo.polytable.global.security.principal.CustomUserDetails;
+import kr.ac.kopo.polytable.global.security.principal.CustomUserDetailsService;
+import kr.ac.kopo.polytable.member.dto.*;
+import kr.ac.kopo.polytable.member.error.MemberNotFoundException;
 import kr.ac.kopo.polytable.member.model.Address;
 import kr.ac.kopo.polytable.member.model.Member;
 import kr.ac.kopo.polytable.member.model.Store;
 import kr.ac.kopo.polytable.member.model.repository.MemberRepository;
+import kr.ac.kopo.polytable.member.util.GetMemberInfo;
 import kr.ac.kopo.polytable.modelmapper.CustomModelMapper;
 import org.aspectj.lang.annotation.Before;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,71 +41,18 @@ class MemberServiceTest {
     @MockBean(name = "memberRepository")
     private MemberRepository memberRepository;
 
+    @MockBean(name = "customUserDetailsService")
+    private CustomUserDetailsService customUserDetailsService;
+
 
     @Test
+    @DisplayName(value = "회원가입")
     void createMemberTest() {
-        /**
-         * 유저 기본 정보
-         */
 
-        final String email = "test@email.com22";
-        final String username = "test22";
-        final String password = "test22";
-        final LocalDate birthDate = LocalDate.of(2000,1,1);
-        final String name = "testName22";
-        final String telNo = "000-0000-1111";
+        CreateRequest member = GetMemberInfo.bingingMember();
 
-        /**
-         * 가게 기본 정보
-         */
-
-        final String crn = "000-11-00000";
-        final String storeName = "testName22";
-        final String storeTelNo = "000-111-0000";
-        final LocalDate foundedDate = LocalDate.of(2023,1,1);
-        final LocalTime openTime = LocalTime.of(8,0);
-        final LocalTime closeTime = LocalTime.of(18,30);
-
-        /**
-         * 주소 기본 정보
-         */
-
-        final String province = "대전광역시";
-        final String city = "동구";
-        final String road = "우암로";
-        final String zipcode = "352-21";
-
-        Address address = Address.builder()
-                .province(province)
-                .city(city)
-                .road(road)
-                .zipcode(zipcode)
-                .build();
-
-        Store store = Store.builder()
-                .crn(crn)
-                .storeName(storeName)
-                .storeTelNo(storeTelNo)
-                .foundedDate(foundedDate)
-                .openTime(openTime)
-                .closeTime(closeTime)
-                .address(address)
-                .build();
-
-        Member member = Member.builder()
-                .email(email)
-                .username(username)
-                .password(password)
-                .birthDate(birthDate)
-                .roleType(RoleType.USER)
-                .name(name)
-                .telNo(telNo)
-                .store(store)
-                .build();
-
-
-        given(memberRepository.save(member)).willReturn(member);
-        SimpleMemberResponse response = memberService.create(member);
+        given(memberRepository.save(member.toEntity())).willReturn(member.toEntity());
+        SimpleMemberResponse response = memberService.create(member.toEntity());
 
 
         assertThat(response.getUsername()).isEqualTo(member.getUsername());
@@ -107,7 +60,60 @@ class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("회원정보_수정")
     void modifiedMemberInfoTest() {
 
+        CreateRequest member = GetMemberInfo.bingingMember();
+
+        given(memberRepository.save(member.toEntity())).willReturn(member.toEntity());
+        Member savedMember = memberRepository.save(member.toEntity());
+
+        ModifiedRequest request = GetMemberInfo.modifiedMemberInfo();
+        savedMember.changeNewInfo(request);
+
+        assertThat(savedMember.getEmail()).isEqualTo(request.getEmail());
+        assertThat(savedMember.getName()).isEqualTo(request.getName());
+        assertThat(savedMember.getTelNo()).isEqualTo(request.getTelNo());
+        assertThat(savedMember.getStore().getStoreName()).isEqualTo(request.getStore().getStoreName());
+    }
+
+    @Test
+    @DisplayName(value = "회원 탈퇴/비활성화")
+    void turnOffAccountTest() {
+
+        CreateRequest member = GetMemberInfo.bingingMember();
+
+        given(memberRepository.save(member.toEntity())).willReturn(member.toEntity());
+
+        Member savedMember = memberRepository.save(member.toEntity());
+
+        savedMember.turnOffAccount();
+
+        assertThat(savedMember.isActivated()).isFalse();
+    }
+
+    @Test
+    @DisplayName(value = "로그인 계정 정보")
+    void trackingAuthTest() {
+
+        CreateRequest member = GetMemberInfo.bingingMember();
+        given(memberRepository.save(member.toEntity())).willReturn(member.toEntity());
+        Member savedMember = memberRepository.save(member.toEntity());
+
+
+        given(customUserDetailsService.loadUserByUsername(savedMember.getUsername())).willReturn(CustomUserDetails.of(member.toEntity()));
+
+        CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(member.getUsername());
+
+        given(memberRepository.findById(customUserDetails.getId())).willReturn(Optional.of(member.toEntity()));
+
+        MemberResponse findMember = memberRepository.findById(customUserDetails.getId())
+                .map(MemberResponse::of).orElseThrow(
+                () -> new MemberNotFoundException("존재하지 않는 멤버")
+        );
+
+        assertThat(findMember.getUsername()).isEqualTo(savedMember.getUsername());
+        assertThat(findMember.getEmail()).isEqualTo(savedMember.getEmail());
+        assertThat(findMember.getName()).isEqualTo(savedMember.getName());
     }
 }

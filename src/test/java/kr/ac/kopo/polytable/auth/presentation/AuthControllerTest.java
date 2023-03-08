@@ -8,8 +8,12 @@ import kr.ac.kopo.polytable.global.jwt.TokenProvider;
 import kr.ac.kopo.polytable.global.jwt.dto.TokenDTO;
 import kr.ac.kopo.polytable.global.jwt.vo.RefreshToken;
 import kr.ac.kopo.polytable.global.security.principal.CustomUserDetailsService;
+import kr.ac.kopo.polytable.member.application.MemberService;
+import kr.ac.kopo.polytable.member.dto.CreateRequest;
 import kr.ac.kopo.polytable.member.dto.RoleType;
+import kr.ac.kopo.polytable.member.model.Member;
 import kr.ac.kopo.polytable.member.model.repository.MemberRepository;
+import kr.ac.kopo.polytable.member.util.GetMemberInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +47,7 @@ class AuthControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberService memberService;
 
     @Autowired TokenProvider tokenProvider;
 
@@ -54,6 +58,9 @@ class AuthControllerTest {
     void authLoginTest() throws Exception {
 
         ObjectMapper om = new ObjectMapper();
+
+        CreateRequest member = GetMemberInfo.bingingMember();
+        memberService.create(member.toEntity());
 
         final String username = "test";
         final String password = "test";
@@ -79,6 +86,11 @@ class AuthControllerTest {
     @Test
     @WithUserDetails(value = "test")
     void authReissueTest() throws Exception {
+
+        CreateRequest member = GetMemberInfo.bingingMember();
+
+        memberService.create(member.toEntity());
+
         Set<SimpleGrantedAuthority> authorities =
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_" + RoleType.USER));
 

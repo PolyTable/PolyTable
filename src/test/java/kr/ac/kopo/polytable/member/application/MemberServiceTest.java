@@ -4,27 +4,16 @@ import kr.ac.kopo.polytable.global.security.principal.CustomUserDetails;
 import kr.ac.kopo.polytable.global.security.principal.CustomUserDetailsService;
 import kr.ac.kopo.polytable.member.dto.*;
 import kr.ac.kopo.polytable.member.error.MemberNotFoundException;
-import kr.ac.kopo.polytable.member.model.Address;
 import kr.ac.kopo.polytable.member.model.Member;
-import kr.ac.kopo.polytable.member.model.Store;
 import kr.ac.kopo.polytable.member.model.repository.MemberRepository;
 import kr.ac.kopo.polytable.member.util.GetMemberInfo;
-import kr.ac.kopo.polytable.modelmapper.CustomModelMapper;
-import org.aspectj.lang.annotation.Before;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;

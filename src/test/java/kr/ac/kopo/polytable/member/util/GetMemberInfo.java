@@ -75,6 +75,68 @@ public class GetMemberInfo {
                 .build();
     }
 
+    public static CreateRequest initMember() {
+
+        /**
+         * 유저 기본 정보
+         */
+
+        final String email = "test2@email.com";
+        final String username = "test2";
+        final String password = "test2";
+        final LocalDate birthDate = LocalDate.of(2000,1,1);
+        final String name = "testName2";
+        final String telNo = "000-0001-1111";
+
+        /**
+         * 가게 기본 정보
+         */
+
+        final String crn = "000-11-00011";
+        final String storeName = "testName2";
+        final String storeTelNo = "000-111-0011";
+        final LocalDate foundedDate = LocalDate.of(2023,1,1);
+        final LocalTime openTime = LocalTime.of(8,0);
+        final LocalTime closeTime = LocalTime.of(18,30);
+
+        /**
+         * 주소 기본 정보
+         */
+
+        final String province = "대전광역시";
+        final String city = "동구";
+        final String road = "우암로";
+        final String zipcode = "352-21";
+
+
+        Address address = Address.builder()
+                .province(province)
+                .city(city)
+                .road(road)
+                .zipcode(zipcode)
+                .build();
+
+        Store store = Store.builder()
+                .crn(crn)
+                .storeName(storeName)
+                .storeTelNo(storeTelNo)
+                .foundedDate(foundedDate)
+                .openTime(openTime)
+                .closeTime(closeTime)
+                .address(address)
+                .build();
+
+        return CreateRequest.builder()
+                .email(email)
+                .username(username)
+                .password(password)
+                .birthDate(birthDate)
+                .name(name)
+                .telNo(telNo)
+                .store(store)
+                .build();
+    }
+
     public static ModifiedRequest modifiedMemberInfo() {
         /**
          * 유저 수정 정보

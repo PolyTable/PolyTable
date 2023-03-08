@@ -14,6 +14,9 @@ import kr.ac.kopo.polytable.member.dto.RoleType;
 import kr.ac.kopo.polytable.member.model.Member;
 import kr.ac.kopo.polytable.member.model.repository.MemberRepository;
 import kr.ac.kopo.polytable.member.util.GetMemberInfo;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,27 +43,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@Transactional
 @AutoConfigureMockMvc
 class AuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private MemberService memberService;
-
-    @Autowired TokenProvider tokenProvider;
-
+    @Autowired
+    private TokenProvider tokenProvider;
     @Autowired
     private AuthService authService;
+
+    @BeforeEach
+    void initMember() {
+        CreateRequest createRequest = GetMemberInfo.bingingMember();
+        memberService.create(createRequest.toEntity());
+    }
 
     @Test
     void authLoginTest() throws Exception {
 
         ObjectMapper om = new ObjectMapper();
-
-        CreateRequest member = GetMemberInfo.bingingMember();
-        memberService.create(member.toEntity());
 
         final String username = "test";
         final String password = "test";
@@ -76,20 +81,18 @@ class AuthControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "test")
     void authLogoutTest() throws Exception {
+
+        authService.login("test", "test");
 
         mockMvc.perform(delete("/api/logout"))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    @WithUserDetails(value = "test")
     void authReissueTest() throws Exception {
 
-        CreateRequest member = GetMemberInfo.bingingMember();
-
-        memberService.create(member.toEntity());
+        authService.login("test", "test");
 
         Set<SimpleGrantedAuthority> authorities =
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_" + RoleType.USER));

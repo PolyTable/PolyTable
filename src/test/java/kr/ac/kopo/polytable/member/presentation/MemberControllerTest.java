@@ -1,43 +1,27 @@
 package kr.ac.kopo.polytable.member.presentation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import kr.ac.kopo.polytable.global.security.principal.CustomUserDetails;
-import kr.ac.kopo.polytable.global.security.principal.CustomUserDetailsService;
+import kr.ac.kopo.polytable.auth.application.AuthService;
 import kr.ac.kopo.polytable.member.application.MemberService;
 import kr.ac.kopo.polytable.member.dto.CreateRequest;
 import kr.ac.kopo.polytable.member.dto.ModifiedRequest;
-import kr.ac.kopo.polytable.member.dto.SimpleMemberResponse;
 import kr.ac.kopo.polytable.member.error.MemberNotFoundException;
-import kr.ac.kopo.polytable.member.model.Address;
 import kr.ac.kopo.polytable.member.model.Member;
-import kr.ac.kopo.polytable.member.model.Store;
 import kr.ac.kopo.polytable.member.model.repository.MemberRepository;
 import kr.ac.kopo.polytable.member.util.GetMemberInfo;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.CachingUserDetailsService;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Optional;
+import javax.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,13 +32,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class MemberControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
+    @Autowired
+    private AuthService authService;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private MemberService memberService;
+
+    @BeforeEach
+    void initMember() {
+        CreateRequest createRequest = GetMemberInfo.initMember();
+        memberService.create(createRequest.toEntity());
+    }
 
     @Test
     @DisplayName(value = "계정 생성")
@@ -73,9 +67,10 @@ class MemberControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "test")
     @DisplayName(value = "계정 정보 수정")
     void modifiedMemberAndStoreTest() throws Exception {
+
+        authService.login("test2", "test2");
 
         ObjectMapper om = new ObjectMapper();
 
@@ -91,15 +86,16 @@ class MemberControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "test")
     @DisplayName(value = "계정 비활성화/삭제")
     void turnOffAccountTest() throws Exception {
+
+        authService.login("test2", "test2");
 
         mockMvc.perform(delete("/api/members"))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        Member findMember = memberRepository.findByUsername("test").orElseThrow(
+        Member findMember = memberRepository.findByUsername("test2").orElseThrow(
                 () -> new MemberNotFoundException("존재하지 않는 멤버")
         );
 
@@ -107,10 +103,10 @@ class MemberControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = "test")
     @DisplayName(value = "로그인 정보 조회")
     void getMyInfoTest() throws Exception {
 
+        authService.login("test2", "test2");
 
         mockMvc.perform(get("/api/members"))
                 .andExpect(status().isOk())

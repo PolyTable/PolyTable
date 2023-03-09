@@ -26,13 +26,10 @@ class MemberServiceTest {
 
     @Autowired
     private MemberService memberService;
-
     @MockBean(name = "memberRepository")
     private MemberRepository memberRepository;
-
     @MockBean(name = "customUserDetailsService")
     private CustomUserDetailsService customUserDetailsService;
-
 
     @Test
     @DisplayName(value = "회원가입")
